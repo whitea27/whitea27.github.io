@@ -15,7 +15,7 @@
 ---
 ### Research
 
-[OCR with Image Handling and Captioning - Python](OCR_PDF_ImageandCaptiontoMD.ipynb)
+[OCR with Image Handling and Captioning - Python](OCR_PDF_ImageandCaptiontoMD.html)
 
 ---
 ### Other
