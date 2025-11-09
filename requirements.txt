@@ -1,0 +1,9 @@
+nest_asyncio
+asyncpraw
+pandas
+scikit-learn
+vaderSentiment
+matplotlib
+requests
+transformers
+huggingface_hub
