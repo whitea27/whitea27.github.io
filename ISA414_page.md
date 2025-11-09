@@ -8,4 +8,4 @@ Our group chose to investigate the sentiment of passengers after an announcement
 
 [Scraping Yahoo Finance](YahooFinance%20(1).html)
 
-[Project Report (PDF)](ISA_414_Final_Project%20Report.pdf)
+[Project Report (PDF)](ISA_414_Final_Project_Report.pdf)
