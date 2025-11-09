@@ -10,7 +10,7 @@
 [Forecasting Energy Consumption - Python](https://colab.research.google.com/drive/1PpkgYZ37WCEiRD18M01b-b0WqHOnG_vk)
 
 ---
-[Reddit Comments Sentiment Analysis - Python](/ISA414_page)
+[Southwest Airlines Sentiment Analysis - Python](/ISA414_page)
 
 ---
 ### Research
