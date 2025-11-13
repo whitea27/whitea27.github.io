@@ -4,18 +4,18 @@
 
 ### Course Projects 
 
-[Loan Data Preparation for Modeling - RStudio](/DataPrep_page)
+[Loan Data Preparation for Modeling - RStudio](/course_projects/DataPrep_page)
 
 ---
 [Forecasting Energy Consumption - Python](https://colab.research.google.com/drive/1PpkgYZ37WCEiRD18M01b-b0WqHOnG_vk)
 
 ---
-[Southwest Airlines Sentiment Analysis - Python](/ISA414_page)
+[Southwest Airlines Sentiment Analysis - Python](/course_projects/ISA414_page)
 
 ---
 ### Research
 
-[OCR with Image Handling and Captioning - Python](OCR_PDF_ImageandCaptiontoMD.html)
+[OCR with Image Handling and Captioning - Python](/course_projects/OCR_PDF_ImageandCaptiontoMD.html)
 
 ---
 ### Other
