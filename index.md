@@ -15,7 +15,7 @@
 ---
 ### Research
 
-[OCR with Image Handling and Captioning - Python](/course_projects/OCR_PDF_ImageandCaptiontoMD.html)
+[OCR with Image Handling and Captioning - Python](/research/OCR_PDF_ImageandCaptiontoMD.html)
 
 ---
 ### Other
