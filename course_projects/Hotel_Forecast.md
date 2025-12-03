@@ -5,3 +5,5 @@
 
 **Data Description:** The sample of hotel data is for 18 different hotels. The data set includes the unique id for each hotel, date stamp, day, month, year, and percent occupied as a percentage. There are some hotels that when full occupancy is reached, convert conference areas into additional hotel rooms to house more guests, which causes the percent occupancy to surpass 1.0.
 
+### Access Code Here:
+[Forecasting Hotel Occupancy Code - Colab](https://colab.research.google.com/drive/1qkT8U0xFX7gUwOJr5dBeO068GXnkloZX#scrollTo=TPkiRkj-SnoO)
