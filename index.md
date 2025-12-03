@@ -9,7 +9,7 @@
 ---
 [Forecasting Hotel Occupancy - Python](/course_projects/Hotel_Occupancy_page)
 
---
+---
 [Forecasting Energy Consumption - Python](https://colab.research.google.com/drive/1PpkgYZ37WCEiRD18M01b-b0WqHOnG_vk)
 
 ---
