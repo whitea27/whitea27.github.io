@@ -6,4 +6,304 @@
 **Data Description:** The sample of hotel data is for 18 different hotels. The data set includes the unique id for each hotel, date stamp, day, month, year, and percent occupied as a percentage. There are some hotels that when full occupancy is reached, convert conference areas into additional hotel rooms to house more guests, which causes the percent occupancy to surpass 1.0.
 
 
+Installing Packages
+
+!pip install utilsforecast
+
+!pip install statsforecast
+
+!pip install lightgbm
+
+!pip install NeuralForecast
+
+!pip install nixtla
+
+import pandas as pd
+from utilsforecast.plotting import plot_series
+from statsforecast import StatsForecast
+from statsforecast.models import HistoricAverage, Naive, SeasonalNaive, WindowAverage, SeasonalWindowAverage, AutoARIMA,AutoETS
+from utilsforecast.losses import rmse, mae, mape
+from utilsforecast.evaluation import evaluate
+import lightgbm as lgb
+from neuralforecast.auto import AutoNBEATS, AutoNHITS
+from neuralforecast import NeuralForecast
+
+Reading in the Data
+
+df = pd.read_parquet("/sample_hotels.parquet")
+
+df = (
+    df
+    .assign(
+        ds = lambda x: pd.to_datetime(x['ds']),
+        day = lambda x: x['day'].astype('category'),
+        month = lambda x: x['month'].astype('category'),
+        year = lambda x: x['year'].astype('category')
+    )
+      #making dataset exactly 1 year
+)
+
+validation = df.query('ds > "2023-01-01" ')
+df = df.query('ds <= "2023-01-01" ')
+
+df.head()
+df.info()
+
+print(df['unique_id'].nunique()) 
+unique_ids = df['unique_id'].unique()
+print(unique_ids)
+
+## Simple Models
+
+simple_models = [
+    Naive(),
+    SeasonalNaive(season_length=7, alias = 'weekly_seasonality'),
+    SeasonalNaive(season_length=28, alias = 'monthly_seasonality'),
+    AutoETS(season_length = 7, alias = 'AutoETS'),
+    AutoARIMA(season_length = 7, alias = 'AutoARIMA')
+]
+
+simple_sf = StatsForecast(
+    models = simple_models,
+    freq='D'
+)
+
+simple_cv = simple_sf.cross_validation(
+    h = 28,
+    df = df[['unique_id', 'ds', 'y']],
+    n_windows = 12, # step*window = 28*12 = whole year
+    step_size = 28
+)
+
+simple_eval = evaluate(
+    df = simple_cv,
+    metrics = [mae, rmse, mape],
+    models = simple_cv.columns[4:].tolist()
+)
+
+simple_eval
+
+## Light gbm
+
+!pip install mlforecast
+
+from mlforecast import MLForecast
+from mlforecast.lag_transforms import RollingMean
+
+
+df_ml = pd.get_dummies(df, columns = ['day', 'month', 'year'], drop_first=True)
+
+ml_models = [
+    lgb.LGBMRegressor()
+]
+
+mlf = MLForecast(
+    models=ml_models,
+    freq="D",
+    lags=(7, 28),
+    lag_transforms={
+        7: [RollingMean(window_size=7)]
+    }
+)
+
+cross_validation_mlf = mlf.cross_validation(
+    df=df_ml,
+    n_windows=6,
+    h=28,
+    id_col='unique_id',
+    time_col='ds',
+    target_col='y',
+    static_features=[]
+)
+
+ml_eval = evaluate(
+    df = cross_validation_mlf,
+    metrics = [mae, rmse, mape],
+    models = cross_validation_mlf.columns[4:].tolist()
+)
+
+display(ml_eval)
+
+
+## Neural Net Models - NBEATS & NHITS
+
+#Took 43 minutes to run with 1 CPU, don't run if you don't have to, otherwise change num_samples to something smaller
+from neuralforecast.losses.pytorch import MQLoss
+
+def small_config(trial):
+    return {
+        "input_size": trial.suggest_categorical("input_size", [14, 28]),
+        "learning_rate": trial.suggest_float("learning_rate", 1e-4, 1e-2),
+        "scaler_type": trial.suggest_categorical("scaler_type", ["standard"])
+    }
+
+nn_models = [
+    AutoNBEATS(
+        h=28,
+        loss=MQLoss(level=[80, 20]),
+        config=small_config,
+        num_samples=5,
+        backend='optuna',
+        alias='AutoNBEATS'
+    ),
+    AutoNHITS(
+        h=28,
+        loss=MQLoss(level=[80, 20]),
+        config=small_config,
+        num_samples=5,
+        backend='optuna',
+        alias='AutoNHITS'
+    ),
+]
+
+nn_forecast = NeuralForecast(
+    models=nn_models,
+    freq='D'
+)
+#Cross validation
+
+cross_validation_nn = nn_forecast.cross_validation(
+    df = df,
+    n_windows= 4,
+    h = 28,
+    step_size = 28
+)
+
+nn_eval = evaluate(
+    df=cross_validation_nn.drop(columns='cutoff'),
+    metrics=[mae, rmse, mape]
+)
+
+## TimeGPT
+
+!pip install nixtla
+
+from nixtla import NixtlaClient
+from nixtla.nixtla_client import TimeGPT
+import os
+
+transformer_models = [
+    TimeGPT()
+]
+#Forecast
+
+
+#Cross Validation
+
+#Evaluation
+
+
+## Evaluating
+
+#Single dataframe
+combined_df = pd.concat(
+    [
+        simple_eval,
+        ml_eval.drop(columns=['unique_id', 'metric']),
+        nn_eval.drop(columns=['unique_id', 'metric'])
+    ],
+    axis=1
+)
+
+evaluation = (
+    combined_df
+    .sort_values(by = 'unique_id')
+    .reset_index(drop = True)
+    .assign(best_model = lambda x: x.iloc[:, 2:].idxmin(axis=1))
+)
+
+evaluation_mae = (
+    evaluation
+    .query("metric == 'mae'")
+    .reset_index(drop = True)
+)
+
+evaluation_mae.value_counts('best_model')
+
+#Count how often each model wins based on MAE
+def count_model_wins(forecast_df):
+    model_columns = [col for col in forecast_df.columns if col not in ['ds', 'y', 'unique_id']]
+
+    wins = {}
+    for model in model_columns:
+        wins[model] = 0
+
+    for i in range(len(forecast_df)):
+        actual = forecast_df['y'].iloc[i]
+        errors = {}
+
+        for model in model_columns:
+            pred = forecast_df[model].iloc[i]
+            errors[model] = abs(actual - pred)
+
+        winner = min(errors, key=errors.get)
+        wins[winner] += 1
+
+    return wins
+
+def calculate_mae_scores(forecast_df):
+    from utilsforecast.losses import mae
+
+    model_columns = [col for col in forecast_df.columns if col not in ['ds', 'y', 'unique_id']]
+
+    mae_scores = {}
+    for model in model_columns:
+        mae_scores[model] = mae(forecast_df['y'], forecast_df[model])
+
+    return mae_scores
+
+#Final eval from above -> save to CSV
+
+def save_results_to_csv(forecast_df, filename='model_results.csv'):
+    import pandas as pd
+
+    mae_scores = calculate_mae_scores(forecast_df)
+
+    wins = count_model_wins(forecast_df)
+
+    results = []
+    for model in mae_scores.keys():
+        results.append({
+            'Model': model,
+            'MAE': mae_scores[model],
+            'Wins': wins[model],
+            'Win_Rate_%': (wins[model] / len(forecast_df)) * 100
+        })
+
+    results_df = pd.DataFrame(results)
+    results_df = results_df.sort_values('MAE')
+    results_df.to_csv(filename, index=False)
+    print(f"Results saved to {filename}")
+
+    return results_df
+
+#Plot forecasts and actuals
+
+def plot_forecasts(forecast_df, title='Forecasts vs Actuals'):
+
+    import matplotlib.pyplot as plt
+
+    model_columns = [col for col in forecast_df.columns if col not in ['ds', 'y', 'unique_id']]
+
+    plt.figure(figsize=(16, 8))
+
+    plt.plot(forecast_df['ds'], forecast_df['y'],
+             label='Actual', color='black', linewidth=3, marker='o',
+             markersize=8, zorder=10)
+
+    colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray']
+    for i, model in enumerate(model_columns):
+        plt.plot(forecast_df['ds'], forecast_df[model],
+                label=model, linestyle='--', marker='s',
+                alpha=0.6, linewidth=2, markersize=5,
+                color=colors[i % len(colors)])
+
+    plt.xlabel('Date', fontsize=12)
+    plt.ylabel('Value', fontsize=12)
+    plt.title(title, fontsize=14)
+    plt.legend(loc='best', fontsize=10)
+    plt.grid(True, alpha=0.3)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
 
