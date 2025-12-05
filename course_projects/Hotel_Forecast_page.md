@@ -8,7 +8,7 @@
 ### Access Code Here:
 [Forecasting Hotel Occupancy Code - Colab](https://colab.research.google.com/drive/1TqV630ISLvYXqVe-2yr-Kqocb5xYx45a#scrollTo=F8vAuFlvRgR8))
 
-[Testing and Evaluation Output CSV](/course_projects/evaluation%(1).csv)
+[Testing and Evaluation Output CSV](/course_projects/evaluation.csv)
 
 **Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This . We would recommend using AutoETS to predict how many rooms would be booked since this is a more complex model than Naive and with further tuning would work better in practice. 
 
