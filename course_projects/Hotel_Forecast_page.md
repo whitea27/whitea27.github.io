@@ -8,8 +8,8 @@
 ### Access Code Here:
 [Forecasting Hotel Occupancy Code - Colab](https://colab.research.google.com/drive/1qkT8U0xFX7gUwOJr5dBeO068GXnkloZX#scrollTo=TPkiRkj-SnoO)
 
-[Testing Output CSV](/course_projects/YahooFinance%20(1).html)
+[Testing and Evaluation Output CSV](/course_projects/model_summary.csv)
 
-**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy on this set of data is the __. An average MAE of ___ across each hotel beats out the other models predictions. We would recommend using __ to predict how many rooms would be booked. 
+**Evaluation:** Based on an evaluation metric of MAE we found that the best models to predict hotel occupancy were surprisingly the Naive and AutoETS models. Both models won based on MAE for 4 hotels each. We would recommend using AutoETS to predict how many rooms would be booked since this is a more complex model than Naive and with further tuning would work better in practice. 
 
-[Evaluation CSV](/course_projects/YahooFinance%20(1).html)
+
