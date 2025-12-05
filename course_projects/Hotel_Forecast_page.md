@@ -10,7 +10,8 @@
 
 [Testing and Evaluation Output CSV](/course_projects/evaluation.csv)
 
-**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This model had an average MAE of .12 or a 12% error since the data is scaled to percentage of occupancy. This is not a great error, it is relatively high in order to be used in practice.
+**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This model had an average MAE of .12 or a 12% error since the data is scaled to percentage of occupancy. This is not a great error, it is probably too high to be used in practice.
+
 
 |                     |   Win Count |   Win Rate |   Average MAE |
 |:--------------------|------------:|-----------:|--------------:|
@@ -24,7 +25,8 @@
 | AutoARIMA           |           - |          - |        0.1284 |
 | AutoNBEATS-median   |           - |          - |        0.1748 |
 
-**Plotting Forecast vs. Actuals Using AutoETS**
+
+### Plotting Forecast vs. Actuals Using AutoETS
 
 ![Forecast Plot](forecast_plot.png)
 
