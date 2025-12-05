@@ -10,6 +10,22 @@
 
 [Testing and Evaluation Output CSV](/course_projects/evaluation.csv)
 
-**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This . We would recommend using AutoETS to predict how many rooms would be booked since this is a more complex model than Naive and with further tuning would work better in practice. 
+**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This model had an average MAE of .12 or a 12% error since the data is scaled to percentage of occupancy. This is not a great error, it is relatively high in order to be used in practice.
+
+|                     |   Win Count |   Win Rate |   Average MAE |
+|:--------------------|------------:|-----------:|--------------:|
+| AutoETS             |           6 |      35.29 |        0.1202 |
+| weekly_seasonality  |           4 |      23.53 |        0.1235 |
+| TimeGPT             |           3 |      17.65 |        0.124  |
+| LGBMRegressor       |           3 |      17.65 |        0.1323 |
+| AutoNHITS-median    |           1 |       5.88 |        0.1988 |
+| Naive               |           - |          - |        0.1544 |
+| monthly_seasonality |           - |          - |        0.1419 |
+| AutoARIMA           |           - |          - |        0.1284 |
+| AutoNBEATS-median   |           - |          - |        0.1748 |
+
+**Plotting Forecast vs. Actuals Using AutoETS**
+
+![Forecast Plot](course_projects/forecast_plot.png)
 
 
