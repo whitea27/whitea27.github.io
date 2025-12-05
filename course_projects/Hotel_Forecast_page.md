@@ -26,6 +26,6 @@
 
 **Plotting Forecast vs. Actuals Using AutoETS**
 
-![Forecast Plot](course_projects/forecast_plot.png)
+![Forecast Plot](forecast_plot.png)
 
 
