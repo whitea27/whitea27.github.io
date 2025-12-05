@@ -6,10 +6,10 @@
 **Data Description:** The sample of hotel data is for 18 different hotels. The data set includes the unique id for each hotel, date stamp, day, month, year, and percent occupied as a percentage. There are some hotels that when full occupancy is reached, convert conference areas into additional hotel rooms to house more guests, which causes the percent occupancy to surpass 1.0.
 
 ### Access Code Here:
-[Forecasting Hotel Occupancy Code - Colab](https://colab.research.google.com/drive/1qkT8U0xFX7gUwOJr5dBeO068GXnkloZX#scrollTo=TPkiRkj-SnoO)
+[Forecasting Hotel Occupancy Code - Colab](https://colab.research.google.com/drive/1TqV630ISLvYXqVe-2yr-Kqocb5xYx45a#scrollTo=F8vAuFlvRgR8))
 
-[Testing and Evaluation Output CSV](/course_projects/model_summary.csv)
+[Testing and Evaluation Output CSV](/course_projects/evaluation%(1).csv)
 
-**Evaluation:** Based on an evaluation metric of MAE we found that the best models to predict hotel occupancy were surprisingly the Naive and AutoETS models. Both models won based on MAE for 4 hotels each. We would recommend using AutoETS to predict how many rooms would be booked since this is a more complex model than Naive and with further tuning would work better in practice. 
+**Evaluation:** Based on an evaluation metric of MAE we found that the best model to predict hotel occupancy was the AutoETS models. This . We would recommend using AutoETS to predict how many rooms would be booked since this is a more complex model than Naive and with further tuning would work better in practice. 
 
 
